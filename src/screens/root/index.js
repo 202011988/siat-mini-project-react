@@ -1,213 +1,150 @@
-import React, { useEffect, useReducer } from "react";
-import Box from "@mui/material/Box";
-import {
-  ButtonGroup,
-  Grid,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-} from "@mui/material";
+import Grid from "@mui/material/Unstable_Grid2";
+import { useEffect, useReducer, useRef } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
-import { Delete, Edit, PostAdd } from "@mui/icons-material";
-import TextField from "@mui/material/TextField";
-import Modal from "@mui/material/Modal";
-import axios from "axios";
-import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
+import { apiProject } from "../../axios/project";
+import {
+  ProjectAddIcon,
+  ProjectInfoIcon,
+  ProjectList,
+  ProjectListBox,
+  ProjectName,
+} from "../../styled/root";
+import { Divider, ListItemButton } from "@mui/material";
+import { AddCircle, InfoOutlined } from "@mui/icons-material";
+import ProjectInfoModal from "../../components/project/info";
 
-const initialValues = [
-  {
-    id: 0,
-    name: "project1",
-  },
-  {
-    id: 1,
-    name: "project2",
-  },
-  {
-    id: 2,
-    name: "project3",
-  },
-];
+const initialState = {
+  projects: [
+    {
+      created_at: Date.now(),
+      updated_at: Date.now(),
+      id: 1,
+      user_id: 1,
+      name: "project 1",
+      description: "description 1",
+    },
+  ],
+  selectedIndex: 1,
+  modalOpen: false,
+};
 
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 400,
-  bgcolor: "background.paper",
-  border: "2px solid #000",
-  boxShadow: 24,
-  p: 4,
+const reducer = (state, action) => {
+  // type - project : set, add, remove, update
+  // type - selectedIndex : set
+  // type - modal: open or close => toggle
+  switch (action.type) {
+    case "SET_PROJECTS":
+      return { ...state, projects: action.payload };
+    case "ADD_PROJECT":
+      return {
+        ...state,
+        projects: [...state.projects, action.payload],
+      };
+    case "REMOVE_PROJECT":
+      return {
+        ...state,
+        projects: state.projects.filter(
+          (project) => project.id !== action.payload,
+        ),
+      };
+    case "UPDATE_PROJECT":
+      return {
+        ...state,
+        projects: state.projects.map((project) =>
+          project.id === action.payload.id ? action.payload : project,
+        ),
+      };
+    case "SET_SELECTED_INDEX":
+      return { ...state, selectedIndex: action.payload };
+    case "TOGGLE_MODAL":
+      return { ...state, modalOpen: !state.modalOpen };
+  }
 };
 
 const RootScreen = () => {
-  // TODO: reducer 사용 (최적화)
-
-  const [selectedIndex, setSelectedIndex] = React.useState(1);
-  const [newProjectName, setNewProjectName] = React.useState("");
-  const [newProjectDescription, setNewProjectDescription] = React.useState("");
-  const [projects, setProjects] = React.useState(initialValues);
-
-  // Modal
-  const [projectInsertModal, setProjectInsertModal] = React.useState(false);
-  // const [new]
-
-  useEffect(() => {
-    // TODO: get projects - OK
-    // axios.get("/api/projects").then((response) => {
-    //   setProjects(response.data);
-    // });
-  }, []);
-
+  const [state, dispatch] = useReducer(reducer, initialState);
   const navigate = useNavigate();
 
-  const handleListItemClick = (event, index) => {
-    setSelectedIndex(index);
+  useEffect(() => {
+    apiProject.getProjects().then((res) => {
+      dispatch({ type: "SET_PROJECTS", payload: res });
+    });
+  }, []);
+
+  // methods
+  const toggleModal = (project) => () => {
+    dispatch({ type: "TOGGLE_MODAL" });
+    modalRef.current.setProject(project || {});
+  };
+
+  const handleListItemClick = (index) => () => {
+    dispatch({ type: "SET_SELECTED_INDEX", payload: index });
     navigate("/projects/" + index);
   };
 
-  const handleOpen = () => setProjectInsertModal(true);
-  const handleClose = () => setProjectInsertModal(false);
-
-  const handleInputChange = (event) => {
-    setNewProjectName(event.target.value);
+  const handleUpdateProject = (id, name, description) => {
+    apiProject.updateProject(id, name, description).then((res) => {
+      dispatch({ type: "UPDATE_PROJECT", payload: res });
+    });
   };
 
-  const insertProject = () => {
-    // TODO: insert a project
-    axios
-      .post(`api/projects/`)
-      .setProjects((v) => [projects, { id: v.length, name: newProjectName }]);
-    setNewProjectName("");
-    setProjectInsertModal(false);
+  const handleInsertProject = (name, description) => {
+    apiProject.addProject(name, description).then((res) => {
+      dispatch({ type: "ADD_PROJECT", payload: res });
+    });
   };
 
-  // test
-  console.log("rendering");
+  const handleDeleteProject = (id) => {
+    apiProject.removeProject(id).then(() => {
+      dispatch({ type: "REMOVE_PROJECT", payload: id });
+    });
+  };
+
+  // refs
+  const modalRef = useRef(null);
 
   return (
-    <Grid container flexDirection="row" height="100%">
-      <Grid
-        container
-        flexDirection="column"
-        justifyContent="space-evenly"
-        xs={3}
-      >
-        <Grid item>
-          {/*  project list */}
-          <Box
-            sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}
-          >
-            <List component="nav" aria-label="secondary mailbox folder">
-              {projects.map(({ id, name }) => (
-                <>
-                  <ListItemIcon>
-                    <Delete
-                      color="warning"
-                      onClick={() => {
-                        // TODO: delete the project
-                        axios
-                          .delete(`/api/projects/${id}`)
-                          .then(() => {
-                            setProjects((v) =>
-                              v.filter((project) => project.id !== id),
-                            );
-                          })
-                          .catch((err) => {
-                            console.log(err);
-                          });
-                      }}
-                    />
-                  </ListItemIcon>
-
-                  <Edit
-                    onClick={() => {
-                      // TODO: edit the project (name, description)
-                    }}
-                  />
-                  <ListItemButton
-                    selected={selectedIndex === id}
-                    onClick={(event) => handleListItemClick(event, id)}
-                    key={id}
-                  >
-                    <ListItemText primary={name} />
-                  </ListItemButton>
-                </>
-              ))}
-              <ListItem>
-                <ListItemText primary={<PostAdd />} onClick={handleOpen} />
-              </ListItem>
-            </List>
-          </Box>
-        </Grid>
-        <Grid item>
-          {/*  user account */}
-          user box
-        </Grid>
-      </Grid>
-      <Grid item xs={9}>
-        {/* insert a project modal */}
-        <Modal
-          open={projectInsertModal}
-          onClose={handleClose}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <Box sx={style}>
-            <Typography id="modal-modal-title" variant="h6" component="h2">
-              Addition Your Project
-            </Typography>
-            <Grid container flexDirection="column">
-              <Grid item>
-                <TextField
-                  id="outlined-basic"
-                  label="이름"
-                  variant="outlined"
-                  style={{ marginBottom: 15 }}
-                />
+    <Grid container>
+      {/*Project Info Modal TODO: Update */}
+      <ProjectInfoModal
+        open={state.modalOpen}
+        onClose={toggleModal(null)}
+        addProject={handleInsertProject}
+        updateProject={handleUpdateProject}
+        deleteProject={handleDeleteProject}
+        ref={modalRef}
+      />
+      <Grid container>{/* Project List */}</Grid>
+      <ProjectListBox>
+        <ProjectList>
+          {state.projects.map((project) => (
+            <Grid container key={project.id}>
+              <Grid xs={2}>
+                <ProjectInfoIcon>
+                  <InfoOutlined onClick={toggleModal(project)} />
+                </ProjectInfoIcon>
               </Grid>
-              <Grid item>
-                <TextField
-                  id="outlined-basic"
-                  label="설명"
-                  variant="outlined"
-                  style={{ marginBottom: 15 }}
-                />
-              </Grid>
-              <Grid item>
-                {/*<ButtonGroup size="large">*/}
-                <Button
-                  variant="contained"
-                  size="large"
-                  style={{ margin: 15 }}
-                  onClick={insertProject}
+              <Grid xs={10}>
+                <ListItemButton
+                  selected={state.projects.includes(project.id)}
+                  onClick={handleListItemClick(project.id)}
                 >
-                  추가
-                </Button>
-                <Button
-                  variant="outlined"
-                  size="large"
-                  style={{ margin: 15 }}
-                  onClick={() => {
-                    setProjectInsertModal(false);
-                    setNewProjectName("");
-                    setNewProjectDescription("");
-                  }}
-                >
-                  취소
-                </Button>
-                {/*</ButtonGroup>*/}
+                  <ProjectName>{project.name}</ProjectName>
+                </ListItemButton>
               </Grid>
             </Grid>
-          </Box>
-        </Modal>
+          ))}
+          <Divider />
+          <ListItemButton>
+            <ProjectAddIcon>
+              <AddCircle onClick={toggleModal(null)} />
+            </ProjectAddIcon>
+          </ListItemButton>
+        </ProjectList>
+      </ProjectListBox>
+      <Grid>
+        {/* Tasks */}
         <Outlet />
-        {/*<Outlet context={selectedIndex} />*/}
-        {/*<TodoApp projectId={selectedIndex} />*/}
       </Grid>
     </Grid>
   );

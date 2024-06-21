@@ -2,7 +2,8 @@ import "./App.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Signin from "./screens/signin";
 import Signup from "./screens/signup";
-import Root from "./screens/root/index2";
+import Root from "./screens/root";
+import Todo from "./screens/task";
 
 const router = createBrowserRouter([
   // AUTH
@@ -34,6 +35,12 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <Root />,
+    children: [
+      {
+        path: "projects/:projectId",
+        element: <Todo />,
+      },
+    ],
   },
 ]);
 
