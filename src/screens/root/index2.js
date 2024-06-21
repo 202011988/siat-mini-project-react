@@ -48,7 +48,6 @@ const reducer = (state, action) => {
         ),
       };
     case "UPDATE_PROJECT":
-      return;
       return {
         ...state,
         projects: state.projects.map((project) =>
