@@ -10,7 +10,7 @@ import {
   ProjectName,
 } from "../../styled/root";
 import { Divider, ListItemButton } from "@mui/material";
-import { AddCircle, InfoOutlined, Save } from "@mui/icons-material";
+import { AddCircle, InfoOutlined } from "@mui/icons-material";
 import ProjectInfoModal from "../../components/project/info";
 
 const initialState = {
@@ -72,12 +72,12 @@ const RootScreen2 = () => {
   }, []);
 
   // methods
-  const toggleModal = (project) => (event) => {
+  const toggleModal = (project) => () => {
     dispatch({ type: "TOGGLE_MODAL" });
     modalRef.current.setProject(project || {});
   };
 
-  const handleListItemClick = (index) => (event) => {
+  const handleListItemClick = (index) => () => {
     dispatch({ type: "SET_SELECTED_INDEX", payload: index });
     navigate("/projects/" + index);
   };
@@ -94,9 +94,9 @@ const RootScreen2 = () => {
     });
   };
 
-  const handleDeleteProject = (index) => {
-    apiProject.removeProject(index).then(() => {
-      dispatch({ type: "REMOVE_PROJECT", payload: index });
+  const handleDeleteProject = (id) => {
+    apiProject.removeProject(id).then(() => {
+      dispatch({ type: "REMOVE_PROJECT", payload: id });
     });
   };
 
@@ -111,6 +111,7 @@ const RootScreen2 = () => {
         onClose={toggleModal(null)}
         addProject={handleInsertProject}
         updateProject={handleUpdateProject}
+        deleteProject={handleDeleteProject}
         ref={modalRef}
       />
       <Grid container>{/* Project List */}</Grid>
