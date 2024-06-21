@@ -23,11 +23,19 @@ const reducer = (state = initialState, action) => {
     case "SET_TASKS":
       return { ...state, tasks: action.payload };
     case "ADD_TASK":
-      return;
+      return { ...state, tasks: [...state.tasks, action.payload] };
     case "REMOVE_TASK":
-      return;
+      return {
+        ...state,
+        tasks: state.tasks.filter((id) => id !== action.payload),
+      };
     case "UPDATE_TASK":
-      return;
+      return {
+        ...state,
+        tasks: state.tasks.map((task) =>
+          task.id !== action.payload ? action.payload : task,
+        ),
+      };
   }
 };
 
