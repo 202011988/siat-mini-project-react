@@ -114,35 +114,37 @@ const RootScreen = () => {
         deleteProject={handleDeleteProject}
         ref={modalRef}
       />
-      <Grid container>{/* Project List */}</Grid>
-      <ProjectListBox>
-        <ProjectList>
-          {state.projects.map((project) => (
-            <Grid container key={project.id}>
-              <Grid xs={2}>
-                <ProjectInfoIcon>
-                  <InfoOutlined onClick={toggleModal(project)} />
-                </ProjectInfoIcon>
+      {/* Project List */}
+      <Grid xs={2}>
+        <ProjectListBox>
+          <ProjectList>
+            {state.projects.map((project) => (
+              <Grid container key={project.id}>
+                <Grid xs={2}>
+                  <ProjectInfoIcon>
+                    <InfoOutlined onClick={toggleModal(project)} />
+                  </ProjectInfoIcon>
+                </Grid>
+                <Grid xs={10}>
+                  <ListItemButton
+                    selected={state.projects.includes(project.id)}
+                    onClick={handleListItemClick(project.id)}
+                  >
+                    <ProjectName>{project.name}</ProjectName>
+                  </ListItemButton>
+                </Grid>
               </Grid>
-              <Grid xs={10}>
-                <ListItemButton
-                  selected={state.projects.includes(project.id)}
-                  onClick={handleListItemClick(project.id)}
-                >
-                  <ProjectName>{project.name}</ProjectName>
-                </ListItemButton>
-              </Grid>
-            </Grid>
-          ))}
-          <Divider />
-          <ListItemButton>
-            <ProjectAddIcon>
-              <AddCircle onClick={toggleModal(null)} />
-            </ProjectAddIcon>
-          </ListItemButton>
-        </ProjectList>
-      </ProjectListBox>
-      <Grid>
+            ))}
+            <Divider />
+            <ListItemButton>
+              <ProjectAddIcon>
+                <AddCircle onClick={toggleModal(null)} />
+              </ProjectAddIcon>
+            </ListItemButton>
+          </ProjectList>
+        </ProjectListBox>
+      </Grid>
+      <Grid xs={10}>
         {/* Tasks */}
         <Outlet />
       </Grid>
