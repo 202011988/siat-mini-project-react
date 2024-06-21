@@ -20,7 +20,7 @@ const style = {
 };
 
 const ProjectInfoModal = forwardRef(
-  ({ open, onClose, addProject, updateProject }, ref) => {
+  ({ open, onClose, addProject, updateProject, deleteProject }, ref) => {
     // const [projectName, setProjectName] = useState("");
     // const [projectDescription, setProjectDescription] = useState("");
     const [project, setProject] = useState({});
@@ -38,6 +38,11 @@ const ProjectInfoModal = forwardRef(
 
     const handleUpdate = () => {
       updateProject(project.id, project.name, project.description);
+      onClose();
+    };
+
+    const handleDelete = () => {
+      deleteProject(project.id);
       onClose();
     };
 
@@ -104,6 +109,14 @@ const ProjectInfoModal = forwardRef(
                   onClick={handleUpdate}
                 >
                   수정하기
+                </Button>
+                <Button
+                  variant="contained"
+                  color="warning"
+                  disabled={!project.id}
+                  onClick={handleDelete}
+                >
+                  삭제하기
                 </Button>
                 <Button variant="outlined" onClick={onClose}>
                   닫기
