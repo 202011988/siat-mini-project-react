@@ -74,36 +74,34 @@ const TodoApp = () => {
   return (
     <Grid container>
       {/*Project Info Modal TODO: Update */}
-      <Grid container>
-        {/* Project List */}
-        <Grid>
-          <TaskListBox>
-            <TaskList>
-              {state.tasks.map((task) => (
-                <Grid container key={task.id}>
-                  <Grid xs={2}>
-                    <TaskInfoIcon>
-                      <InfoOutlined />
-                    </TaskInfoIcon>
-                  </Grid>
-                  <Grid xs={10}>
-                    <ListItemButton selected={state.tasks.includes(task.id)}>
-                      <TaskName>{task.title}</TaskName>
-                    </ListItemButton>
-                  </Grid>
+      {/* Task List */}
+      <Grid xs={7}>
+        <TaskListBox>
+          <TaskList>
+            {state.tasks.map((task) => (
+              <Grid container key={task.id}>
+                <Grid xs={2}>
+                  <TaskInfoIcon>
+                    <InfoOutlined />
+                  </TaskInfoIcon>
                 </Grid>
-              ))}
-              <Divider />
-              <ListItemButton>
-                <TaskAddIcon>
-                  <AddCircle />
-                </TaskAddIcon>
-              </ListItemButton>
-            </TaskList>
-          </TaskListBox>
-        </Grid>
+                <Grid xs={10}>
+                  <ListItemButton selected={state.tasks.includes(task.id)}>
+                    <TaskName>{task.title}</TaskName>
+                  </ListItemButton>
+                </Grid>
+              </Grid>
+            ))}
+            <Divider />
+            <ListItemButton>
+              <TaskAddIcon>
+                <AddCircle />
+              </TaskAddIcon>
+            </ListItemButton>
+          </TaskList>
+        </TaskListBox>
       </Grid>
-      <Grid>
+      <Grid xs={5}>
         {/* Tasks */}
         <Outlet />
       </Grid>
