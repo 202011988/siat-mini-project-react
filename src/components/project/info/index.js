@@ -41,6 +41,8 @@ const ProjectInfoModal = forwardRef(
       onClose();
     };
 
+    console.log(project);
+
     return (
       <Modal
         open={open}
@@ -60,11 +62,14 @@ const ProjectInfoModal = forwardRef(
                 label="이름"
                 variant="outlined"
                 value={project.name || ""}
-                // onChange={(e) =>
-                //   setProject((v) => {
-                //     v.name = e.target.value;
-                //   })
-                // }
+                onChange={(e) =>
+                  setProject((v) => {
+                    return {
+                      ...v,
+                      name: e.target.value,
+                    };
+                  })
+                }
                 fullWidth
               />
             </Grid>
@@ -73,11 +78,14 @@ const ProjectInfoModal = forwardRef(
                 label="설명"
                 variant="outlined"
                 value={project.description || ""}
-                // onChange={(e) =>
-                //   setProject((v) => {
-                //     v.description = e.target.value;
-                //   })
-                // }
+                onChange={(e) =>
+                  setProject((v) => {
+                    return {
+                      ...v,
+                      description: e.target.value,
+                    };
+                  })
+                }
                 fullWidth
               />
             </Grid>
