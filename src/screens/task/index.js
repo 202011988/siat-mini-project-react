@@ -20,8 +20,9 @@ import {
 import { AddCircle, InfoOutlined } from "@mui/icons-material";
 import { Outlet } from "react-router-dom";
 import { useParams } from "react-router-dom";
-import { useEffect, useReducer } from "react";
+import {useEffect, useReducer, useRef} from "react";
 import { apiTask } from "../../axios/task";
+import TaskInfoModal from "../../components/task/info";
 
 const initialState = {
   tasks: [
@@ -71,9 +72,51 @@ const TodoApp = () => {
     });
   }, [projectId]);
 
+  // methods
+  const toggleModal = (project) => () => {
+    dispatch({ type: "TOGGLE_MODAL" });
+    modalRef.current.setProject(project || {});
+  };
+
+  const handleListItemClick = (index) => () => {
+    dispatch({ type: "SET_SELECTED_INDEX", payload: index });
+    navigate("tasks/" + index);
+  };
+
+  const handleUpdateTask = (id, name, description) => {
+    // TODO
+    // apiProject.updateProject(id, name, description).then((res) => {
+    //   dispatch({ type: "UPDATE_PROJECT", payload: res });
+    // });
+  };
+
+  const handleInsertTask = (name, description) => {
+    // TODO
+    // apiProject.addProject(name, description).then((res) => {
+    //   dispatch({ type: "ADD_PROJECT", payload: res });
+    // });
+  };
+
+  const handleDeleteTask = (id) => {
+    // TODO
+    // apiProject.removeProject(id).then(() => {
+    //   dispatch({ type: "REMOVE_PROJECT", payload: id });
+    // });
+  };
+
+  // refs
+  const modalRef = useRef(null);
+
   return (
     <Grid container>
-      {/*Project Info Modal TODO: Update */}
+      <TaskInfoModal
+      open={}
+      onClose={}
+      addTask={}
+      updateTask={}
+      deleteTask={}
+      ref={modalRef}
+      />
       {/* Task List */}
       <Grid xs={7}>
         <TaskListBox>
@@ -82,7 +125,7 @@ const TodoApp = () => {
               <Grid container key={task.id}>
                 <Grid xs={2}>
                   <TaskInfoIcon>
-                    <InfoOutlined />
+                    <InfoOutlined onClick={toggleModal(task)} />
                   </TaskInfoIcon>
                 </Grid>
                 <Grid xs={10}>
@@ -93,7 +136,7 @@ const TodoApp = () => {
               </Grid>
             ))}
             <Divider />
-            <ListItemButton>
+            <ListItemButton onClick={() => {}}>
               <TaskAddIcon>
                 <AddCircle />
               </TaskAddIcon>
@@ -102,7 +145,7 @@ const TodoApp = () => {
         </TaskListBox>
       </Grid>
       <Grid xs={5}>
-        {/* Tasks */}
+        {/* Steps */}
         <Outlet />
       </Grid>
     </Grid>

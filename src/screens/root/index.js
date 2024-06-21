@@ -136,9 +136,9 @@ const RootScreen = () => {
               </Grid>
             ))}
             <Divider />
-            <ListItemButton>
+            <ListItemButton onClick={toggleModal(null)}>
               <ProjectAddIcon>
-                <AddCircle onClick={toggleModal(null)} />
+                <AddCircle />
               </ProjectAddIcon>
             </ListItemButton>
           </ProjectList>

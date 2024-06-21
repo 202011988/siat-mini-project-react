@@ -11,7 +11,8 @@ const insertProject = async (name, description) => {
 };
 
 const deleteProject = async (id) => {
-  await axios.delete(`/api/projects/`);
+  const response = await axios.delete(`/api/projects/${id}`);
+  return response.data;
 };
 
 const updateProject = async (id, name, description) => {

@@ -1,62 +1,63 @@
 import { forwardRef, useImperativeHandle, useState } from "react";
-import CustomModal from "../../info";
 import { useNavigate } from "react-router-dom";
+import CustomModal from "../../info";
 
-const ProjectInfoModal = forwardRef(
-  ({ open, onClose, addProject, updateProject, deleteProject }, ref) => {
-    const [project, setProject] = useState({});
+const TaskInfoModal = forwardRef(
+  ({ open, onClose, addTask, updateTask, deleteTask }, ref) => {
+    const [task, setTask] = useState({});
 
     const navigate = useNavigate();
 
     useImperativeHandle(ref, () => ({
-      setProject: (newProject) => {
-        setProject(newProject);
+      setTask: (newTask) => {
+        setTask(newTask);
       },
     }));
 
     const handleInsert = () => {
-      addProject(project.name, project.description);
+      // TODO
       onClose();
     };
 
     const handleUpdate = () => {
-      updateProject(project.id, project.name, project.description);
+      // TODO
       onClose();
     };
 
     const handleDelete = () => {
-      deleteProject(project.id);
-      navigate("/");
+      // TODO
       onClose();
     };
 
     const handleChange = (field, value) => {
-      setProject((prev) => ({ ...prev, [field]: value }));
+      setTask((prev) => ({ ...prev, [field]: value }));
     };
 
     const fields = [
-      { name: "name", label: "이름" },
+      { name: "dueDate", label: "마감일" },
+      { name: "title", label: "제목" },
       { name: "description", label: "설명" },
+      { name: "status", label: "상태" },
     ];
 
     const buttons = [
       {
         text: "추가하기",
         variant: "contained",
-        disabled: project.id,
+        disabled: task.id,
         onClick: handleInsert,
       },
       {
         text: "수정하기",
         variant: "contained",
-        disabled: !project.id,
+        disabled: !task.id,
         onClick: handleUpdate,
       },
       {
         text: "삭제하기",
         variant: "contained",
         color: "warning",
-        disabled: !project.id,
+        disabled: !task.id,
         onClick: handleDelete,
       },
       { text: "닫기", variant: "outlined", onClick: onClose },
@@ -66,14 +67,14 @@ const ProjectInfoModal = forwardRef(
       <CustomModal
         open={open}
         onClose={onClose}
-        title="프로젝트 정보"
+        title="할 일 정보"
         fields={fields}
         buttons={buttons}
-        values={project}
+        values={task}
         onChange={handleChange}
       />
     );
   },
 );
 
-export default ProjectInfoModal;
+export default TaskInfoModal;
