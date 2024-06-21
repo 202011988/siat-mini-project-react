@@ -1,3 +1,24 @@
+import {
+  Box,
+  Button,
+  Divider,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemText,
+  TextField,
+  Typography,
+} from "@mui/material";
+import Grid from "@mui/material/Unstable_Grid2";
+import {
+  TaskAddIcon,
+  TaskInfoIcon,
+  TaskList,
+  TaskListBox,
+  TaskName,
+} from "../../styled/task";
+import { AddCircle, InfoOutlined } from "@mui/icons-material";
+import { Outlet } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { useEffect, useReducer } from "react";
 import { apiTask } from "../../axios/task";
@@ -51,12 +72,51 @@ const TodoApp = () => {
   }, [projectId]);
 
   return (
-    <div>
-      {state.tasks.map((value) => (
-        <p>{value.title}</p>
-      ))}
-    </div>
+    <Grid container>
+      {/*Project Info Modal TODO: Update */}
+      <Grid container>
+        {/* Project List */}
+        <Grid>
+          <TaskListBox>
+            <TaskList>
+              {state.tasks.map((task) => (
+                <Grid container key={task.id}>
+                  <Grid xs={2}>
+                    <TaskInfoIcon>
+                      <InfoOutlined />
+                    </TaskInfoIcon>
+                  </Grid>
+                  <Grid xs={10}>
+                    <ListItemButton selected={state.tasks.includes(task.id)}>
+                      <TaskName>{task.title}</TaskName>
+                    </ListItemButton>
+                  </Grid>
+                </Grid>
+              ))}
+              <Divider />
+              <ListItemButton>
+                <TaskAddIcon>
+                  <AddCircle />
+                </TaskAddIcon>
+              </ListItemButton>
+            </TaskList>
+          </TaskListBox>
+        </Grid>
+      </Grid>
+      <Grid>
+        {/* Tasks */}
+        <Outlet />
+      </Grid>
+    </Grid>
   );
+
+  // return (
+  //   <div>
+  //     {state.tasks.map((value) => (
+  //       <p>{value.title}</p>
+  //     ))}
+  //   </div>
+  // );
 };
 
 export default TodoApp;
