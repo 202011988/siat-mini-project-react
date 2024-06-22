@@ -42,7 +42,7 @@ const CustomModal = ({
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DemoContainer components={["DatePicker"]}>
                     <DatePicker
-                      label="Basic date picker"
+                      label="기한" // Basic date picker
                       defaultValue={dayjs(values[field.name])}
                       onChange={(e) => {
                         // "2024-06-05T15:00:00.000Z" {e.$d} or {e.$y, e.$m, e.$D}
@@ -77,9 +77,9 @@ const CustomModal = ({
                     }}
                     autoWidth
                   >
-                    <MenuItem value={0}>PENDING</MenuItem>
-                    <MenuItem value={1}>IN_PROGRESS</MenuItem>
-                    <MenuItem value={2}>COMPLETED</MenuItem>
+                    <MenuItem value={0}>대기중</MenuItem> // PENDING
+                    <MenuItem value={1}>진행중</MenuItem> // IN_PROGRESS
+                    <MenuItem value={2}>완료</MenuItem> // COMPLETED
                   </Select>
                 </FormControl>
               ) : (

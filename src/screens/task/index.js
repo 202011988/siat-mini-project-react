@@ -1,14 +1,4 @@
-import {
-  Box,
-  Button,
-  Divider,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemText,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Divider, ListItemButton } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2";
 import {
   TaskAddIcon,
@@ -16,6 +6,7 @@ import {
   TaskList,
   TaskListBox,
   TaskName,
+  TaskItem,
 } from "../../styled/task";
 import { AddCircle, InfoOutlined } from "@mui/icons-material";
 import { Outlet } from "react-router-dom";
@@ -135,13 +126,15 @@ const TodoApp = () => {
         <TaskListBox>
           <TaskList>
             {state.tasks.map((task) => (
-              <Grid container key={task.id}>
-                <Grid xs={2}>
+              <TaskItem container key={task.id}>
+                <Grid>
+                  {/*xs={2}*/}
                   <TaskInfoIcon>
                     <InfoOutlined onClick={toggleModal(task)} />
                   </TaskInfoIcon>
                 </Grid>
-                <Grid xs={10}>
+                <Grid>
+                  {/*xs={10}*/}
                   <ListItemButton
                     selected={state.tasks.includes(task.id)}
                     onClick={handleListItemClick(task.id)}
@@ -149,7 +142,7 @@ const TodoApp = () => {
                     <TaskName>{task.title}</TaskName>
                   </ListItemButton>
                 </Grid>
-              </Grid>
+              </TaskItem>
             ))}
             <Divider />
             <ListItemButton onClick={toggleModal(null)}>
