@@ -4,7 +4,7 @@ import Grid from "@mui/material/Unstable_Grid2";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import React from "react";
-import { ButtonGroup, InputLabel, MenuItem, Select } from "@mui/material";
+import { ButtonGroup, MenuItem, Select } from "@mui/material";
 import Button from "@mui/material/Button";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers";
@@ -68,7 +68,8 @@ const CustomModal = ({
                   <Select
                     labelId="demo-simple-select-autowidth-label"
                     id="demo-simple-select-autowidth"
-                    value={values[field.name] || 0}
+                    value={values[field.name]}
+                    defaultValue={0}
                     onChange={(e) => {
                       onChange(field.name, e.target.value);
                     }}
