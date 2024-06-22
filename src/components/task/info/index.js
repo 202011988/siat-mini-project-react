@@ -15,9 +15,9 @@ const TaskInfoModal = forwardRef(
             id: newTask.id,
             title: newTask.title,
             description: newTask.description,
-            dueDate: newTask.dueDate,
+            dueDate: newTask.dueDate || null,
             status:
-              newTask.status === "PENDING"
+              newTask.status === "PENDING" || newTask.status === undefined
                 ? 0
                 : newTask.status === "IN_PROGRESS"
                   ? 1
@@ -65,7 +65,7 @@ const TaskInfoModal = forwardRef(
       {
         text: "추가하기",
         variant: "contained",
-        disabled: task.id,
+        disabled: !!task.id,
         onClick: handleInsert,
       },
       {

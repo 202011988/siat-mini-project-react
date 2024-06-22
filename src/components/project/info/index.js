@@ -43,7 +43,7 @@ const ProjectInfoModal = forwardRef(
       {
         text: "추가하기",
         variant: "contained",
-        disabled: project.id,
+        disabled: !!project.id,
         onClick: handleInsert,
       },
       {
