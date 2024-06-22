@@ -9,9 +9,10 @@ import {
   ProjectListBox,
   ProjectName,
 } from "../../styled/root";
-import { Divider, ListItemButton } from "@mui/material";
-import { AddCircle, InfoOutlined } from "@mui/icons-material";
+import { Divider, ListItem, ListItemButton } from "@mui/material";
+import { AddCircle, InfoOutlined, Login, Logout } from "@mui/icons-material";
 import ProjectInfoModal from "../../components/project/info";
+import Typography from "@mui/material/Typography";
 
 const initialState = {
   projects: [
@@ -72,6 +73,11 @@ const RootScreen = () => {
   }, []);
 
   // methods
+  const handleLogin = () => {
+    navigate("/signin");
+  };
+  const handleLogout = () => {};
+
   const toggleModal = (project) => () => {
     dispatch({ type: "TOGGLE_MODAL" });
     modalRef.current.setProject(project || {});
@@ -141,6 +147,23 @@ const RootScreen = () => {
                 <AddCircle />
               </ProjectAddIcon>
             </ListItemButton>
+            <Divider />
+            {!state.isLoggedIn ? (
+              <ListItemButton onClick={handleLogin}>
+                <Login />
+                Login
+              </ListItemButton>
+            ) : (
+              <>
+                <ListItem>
+                  <Typography variant="body2">{state.userEmail}</Typography>
+                </ListItem>
+                <ListItemButton onClick={handleLogout}>
+                  <Logout />
+                  Logout
+                </ListItemButton>
+              </>
+            )}
           </ProjectList>
         </ProjectListBox>
       </Grid>
