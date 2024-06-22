@@ -4,8 +4,13 @@ import Grid from "@mui/material/Unstable_Grid2";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import React from "react";
-import { ButtonGroup } from "@mui/material";
+import { ButtonGroup, InputLabel, MenuItem, Select } from "@mui/material";
 import Button from "@mui/material/Button";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import FormControl from "@mui/material/FormControl";
 
 const CustomModal = ({
   open,
@@ -16,7 +21,6 @@ const CustomModal = ({
   values,
   onChange,
 }) => {
-  console.log(values);
   return (
     <Modal
       open={open}
@@ -33,13 +37,57 @@ const CustomModal = ({
           </Grid>
           {fields.map((field) => (
             <Grid item key={field.name}>
-              <TextField
-                label={field.label}
-                variant="outlined"
-                value={values[field.name] || ""}
-                onChange={(e) => onChange(field.name, e.target.value)}
-                fullWidth
-              />
+              {field.date !== undefined ? (
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DemoContainer components={["DatePicker"]}>
+                    <DatePicker
+                      label="Basic date picker"
+                      onChange={(e) => {
+                        // "2024-06-05T15:00:00.000Z" {e.$d} or {e.$y, e.$m, e.$D}
+                        // console.log(
+                        //   "".concat(
+                        //     e.$y,
+                        //     String(e.$M + 1).padStart(2, "0"),
+                        //     String(e.$D).padStart(2, "0"),
+                        //   ),
+                        // );
+                        onChange(
+                          field.name,
+                          [
+                            e.$y,
+                            String(e.$M + 1).padStart(2, "0"),
+                            String(e.$D).padStart(2, "0"),
+                          ].join("-"),
+                        );
+                      }}
+                    />
+                  </DemoContainer>
+                </LocalizationProvider>
+              ) : field.status !== undefined ? (
+                <FormControl sx={{ m: 1, minWidth: 80 }}>
+                  <Select
+                    labelId="demo-simple-select-autowidth-label"
+                    id="demo-simple-select-autowidth"
+                    value={values[field.name] || 0}
+                    onChange={(e) => {
+                      onChange(field.name, e.target.value);
+                    }}
+                    autoWidth
+                  >
+                    <MenuItem value={0}>PENDING</MenuItem>
+                    <MenuItem value={1}>IN_PROGRESS</MenuItem>
+                    <MenuItem value={2}>COMPLETED</MenuItem>
+                  </Select>
+                </FormControl>
+              ) : (
+                <TextField
+                  label={field.label}
+                  variant="outlined"
+                  value={values[field.name] || ""}
+                  onChange={(e) => onChange(field.name, e.target.value)}
+                  fullWidth
+                />
+              )}
             </Grid>
           ))}
           <Grid item>

@@ -15,7 +15,8 @@ const TaskInfoModal = forwardRef(
     }));
 
     const handleInsert = () => {
-      // TODO
+      // TODO : title, description, dueDate, status
+      addTask(task.title, task.description, task.dueDate, task.status);
       onClose();
     };
 
@@ -34,10 +35,14 @@ const TaskInfoModal = forwardRef(
     };
 
     const fields = [
-      { name: "dueDate", label: "마감일" },
+      {
+        name: "dueDate",
+        label: "마감일",
+        date: true,
+      },
       { name: "title", label: "제목" },
       { name: "description", label: "설명" },
-      { name: "status", label: "상태" },
+      { name: "status", label: "상태", status: true },
     ];
 
     const buttons = [

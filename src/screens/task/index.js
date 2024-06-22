@@ -97,11 +97,13 @@ const TodoApp = () => {
     // });
   };
 
-  const handleInsertTask = (name, description) => {
+  const handleInsertTask = (title, description, dueDate, status) => {
     // TODO
-    // apiProject.addProject(name, description).then((res) => {
-    //   dispatch({ type: "ADD_PROJECT", payload: res });
-    // });
+    apiTask
+      .addTask(projectId, title, description, dueDate, status)
+      .then((res) => {
+        dispatch({ type: "ADD_TASK", payload: res });
+      });
   };
 
   const handleDeleteTask = (id) => {
