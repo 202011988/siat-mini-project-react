@@ -36,22 +36,6 @@ const SignUpScreen = () => {
   const [passwordError, setPasswordError] = React.useState(false);
   const [nicknameError, setNicknameError] = React.useState(false);
 
-  const [email, setEmail] = React.useState("");
-  const [password, setPassword] = React.useState("");
-  const [nickname, setNickname] = React.useState("");
-
-  const handleEmail = (event) => {
-    setEmail(event.target.value);
-  };
-
-  const handlePassword = (event) => {
-    setPassword(event.target.value);
-  };
-
-  const handleNickname = (event) => {
-    setNickname(event.target.value);
-  };
-
   const navigate = useNavigate();
 
   const handleSubmit = (event) => {
@@ -65,10 +49,12 @@ const SignUpScreen = () => {
     // });
 
     if (!emailError && !passwordError && !passwordError) {
-      apiUser.addUser(email, password, nickname).then(() => {
-        alert("회원가입 완료!");
-        navigate("/signin");
-      });
+      apiUser
+        .addUser(data.get("email"), data.get("password"), data.get("nickname"))
+        .then(() => {
+          alert("회원가입 완료!");
+          navigate("/signin");
+        });
     }
   };
 
@@ -136,7 +122,6 @@ const SignUpScreen = () => {
               fullWidth
               variant="outlined"
               color={emailError ? "error" : "primary"}
-              onChange={handleEmail}
             />
           </FormControl>
           <FormControl>
@@ -155,7 +140,6 @@ const SignUpScreen = () => {
               fullWidth
               variant="outlined"
               color={passwordError ? "error" : "primary"}
-              onChange={handlePassword}
             />
           </FormControl>
           <FormControl>
@@ -174,7 +158,6 @@ const SignUpScreen = () => {
               fullWidth
               variant="outlined"
               color={nicknameError ? "error" : "primary"}
-              onChange={handleNickname}
             />
           </FormControl>
           <Button
