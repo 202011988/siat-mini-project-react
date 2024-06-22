@@ -1,14 +1,4 @@
-import {
-  Box,
-  Button,
-  Divider,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemText,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Divider, ListItemButton } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2";
 import {
   TaskAddIcon,
@@ -16,6 +6,7 @@ import {
   TaskList,
   TaskListBox,
   TaskName,
+  TaskItem,
 } from "../../styled/task";
 import { AddCircle, InfoOutlined } from "@mui/icons-material";
 import { Outlet } from "react-router-dom";
@@ -43,6 +34,8 @@ const initialState = {
 
 const reducer = (state = initialState, action) => {
   // type - task : set, add, remove, update
+  // type - selectedIndex : set
+  // type - modal: open or close => toggle
   switch (action.type) {
     case "SET_TASKS":
       return { ...state, tasks: action.payload };
@@ -51,13 +44,13 @@ const reducer = (state = initialState, action) => {
     case "REMOVE_TASK":
       return {
         ...state,
-        tasks: state.tasks.filter((id) => id !== action.payload),
+        tasks: state.tasks.filter((task) => task.id !== action.payload),
       };
     case "UPDATE_TASK":
       return {
         ...state,
         tasks: state.tasks.map((task) =>
-          task.id !== action.payload ? action.payload : task,
+          task.id === action.payload.id ? action.payload : task,
         ),
       };
     case "SET_SELECTED_INDEX":
@@ -90,15 +83,15 @@ const TodoApp = () => {
     navigate(`/tasks/${index}`);
   };
 
-  const handleUpdateTask = (id, name, description) => {
-    // TODO
-    // apiProject.updateProject(id, name, description).then((res) => {
-    //   dispatch({ type: "UPDATE_PROJECT", payload: res });
-    // });
+  const handleUpdateTask = (id, title, description, dueDate, status) => {
+    apiTask
+      .updateTask(projectId, id, title, description, dueDate, status)
+      .then((res) => {
+        dispatch({ type: "UPDATE_TASK", payload: res });
+      });
   };
 
   const handleInsertTask = (title, description, dueDate, status) => {
-    // TODO
     apiTask
       .addTask(projectId, title, description, dueDate, status)
       .then((res) => {
@@ -107,10 +100,10 @@ const TodoApp = () => {
   };
 
   const handleDeleteTask = (id) => {
-    // TODO
-    // apiProject.removeProject(id).then(() => {
-    //   dispatch({ type: "REMOVE_PROJECT", payload: id });
-    // });
+    apiTask.removeTask(projectId, id).then(() => {
+      console.log(id);
+      dispatch({ type: "REMOVE_TASK", payload: id });
+    });
   };
 
   // refs
@@ -126,19 +119,22 @@ const TodoApp = () => {
         updateTask={handleUpdateTask}
         deleteTask={handleDeleteTask}
         ref={modalRef}
+        projectId={projectId}
       />
       {/* Task List */}
       <Grid xs={7}>
         <TaskListBox>
           <TaskList>
             {state.tasks.map((task) => (
-              <Grid container key={task.id}>
-                <Grid xs={2}>
+              <TaskItem container key={task.id}>
+                <Grid>
+                  {/*xs={2}*/}
                   <TaskInfoIcon>
                     <InfoOutlined onClick={toggleModal(task)} />
                   </TaskInfoIcon>
                 </Grid>
-                <Grid xs={10}>
+                <Grid>
+                  {/*xs={10}*/}
                   <ListItemButton
                     selected={state.tasks.includes(task.id)}
                     onClick={handleListItemClick(task.id)}
@@ -146,7 +142,7 @@ const TodoApp = () => {
                     <TaskName>{task.title}</TaskName>
                   </ListItemButton>
                 </Grid>
-              </Grid>
+              </TaskItem>
             ))}
             <Divider />
             <ListItemButton onClick={toggleModal(null)}>

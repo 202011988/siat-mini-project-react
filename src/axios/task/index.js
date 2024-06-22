@@ -15,9 +15,32 @@ const insertTask = async (projectId, title, description, dueDate, status) => {
   return response.data;
 };
 
-const updateTask = async () => {};
+const updateTask = async (
+  projectId,
+  id,
+  title,
+  description,
+  dueDate,
+  status,
+) => {
+  const response = await axios.put(`/api/projects/${projectId}/tasks/${id}`, {
+    title,
+    description,
+    dueDate,
+    status,
+  });
 
-const deleteTask = async (id) => {};
+  console.log(response.data);
+  return response.data;
+};
+
+const deleteTask = async (projectId, id) => {
+  console.log(projectId);
+  console.log(id);
+
+  const response = await axios.delete(`/api/projects/${projectId}/tasks/${id}`);
+  return response.data;
+};
 
 export const apiTask = {
   getTasks: fetchTasks,

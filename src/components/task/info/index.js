@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import CustomModal from "../../info";
 
 const TaskInfoModal = forwardRef(
-  ({ open, onClose, addTask, updateTask, deleteTask }, ref) => {
+  ({ open, onClose, addTask, updateTask, deleteTask, projectId }, ref) => {
     const [task, setTask] = useState({});
 
     const navigate = useNavigate();
@@ -36,13 +36,19 @@ const TaskInfoModal = forwardRef(
     };
 
     const handleUpdate = () => {
-      // TODO
-      updateTask();
+      updateTask(
+        task.id,
+        task.title,
+        task.description,
+        task.dueDate,
+        task.status,
+      );
       onClose();
     };
 
     const handleDelete = () => {
-      // TODO
+      deleteTask(task.id);
+      navigate(`/projects/${projectId}`);
       onClose();
     };
 

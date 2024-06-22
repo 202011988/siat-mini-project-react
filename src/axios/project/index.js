@@ -16,11 +16,6 @@ const deleteProject = async (id) => {
 };
 
 const updateProject = async (id, name, description) => {
-  console.log({
-    name,
-    description,
-  });
-
   const response = await axios.put(`/api/projects/${id}`, {
     name,
     description,

@@ -126,12 +126,14 @@ const RootScreen = () => {
           <ProjectList>
             {state.projects.map((project) => (
               <Grid container key={project.id}>
-                <Grid xs={2}>
+                <Grid>
+                  {/*xs={2}*/}
                   <ProjectInfoIcon>
                     <InfoOutlined onClick={toggleModal(project)} />
                   </ProjectInfoIcon>
                 </Grid>
-                <Grid xs={10}>
+                <Grid>
+                  {/*xs={10}*/}
                   <ListItemButton
                     selected={state.projects.includes(project.id)}
                     onClick={handleListItemClick(project.id)}
