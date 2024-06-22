@@ -7,13 +7,16 @@ export const TaskListBox = styled(Box)`
   width: 100%;
   height: 100vh;
   //max-width: 360px;
-  background-color: lightgray;
+  // background-color: lightgray;
 `;
 
 export const TaskList = styled(List, {
   withComponent: "nav",
 })`
   height: 100%;
+  //padding: 10px;
+  background-color: lightgray;
+  //border-radius: 3%;
 `;
 
 export const TaskInfoIcon = styled(ListItemIcon)`

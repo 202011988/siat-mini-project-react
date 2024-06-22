@@ -19,8 +19,8 @@ import {
 } from "../../styled/task";
 import { AddCircle, InfoOutlined } from "@mui/icons-material";
 import { Outlet } from "react-router-dom";
-import { useParams } from "react-router-dom";
-import {useEffect, useReducer, useRef} from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { useEffect, useReducer, useRef } from "react";
 import { apiTask } from "../../axios/task";
 import TaskInfoModal from "../../components/task/info";
 
@@ -37,6 +37,8 @@ const initialState = {
       status: "PENDING",
     },
   ],
+  selectedIndex: 1,
+  modalOpen: false,
 };
 
 const reducer = (state = initialState, action) => {
@@ -58,11 +60,16 @@ const reducer = (state = initialState, action) => {
           task.id !== action.payload ? action.payload : task,
         ),
       };
+    case "SET_SELECTED_INDEX":
+      return { ...state, selectedIndex: action.payload };
+    case "TOGGLE_MODAL":
+      return { ...state, modalOpen: !state.modalOpen };
   }
 };
 
 const TodoApp = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const navigate = useNavigate();
   const { projectId } = useParams();
 
   useEffect(() => {
@@ -73,14 +80,14 @@ const TodoApp = () => {
   }, [projectId]);
 
   // methods
-  const toggleModal = (project) => () => {
+  const toggleModal = (task) => () => {
     dispatch({ type: "TOGGLE_MODAL" });
-    modalRef.current.setProject(project || {});
+    modalRef.current.setTask(task || {});
   };
 
   const handleListItemClick = (index) => () => {
     dispatch({ type: "SET_SELECTED_INDEX", payload: index });
-    navigate("tasks/" + index);
+    navigate(`/tasks/${index}`);
   };
 
   const handleUpdateTask = (id, name, description) => {
@@ -106,16 +113,17 @@ const TodoApp = () => {
 
   // refs
   const modalRef = useRef(null);
+  console.log(state.tasks);
 
   return (
     <Grid container>
       <TaskInfoModal
-      open={}
-      onClose={}
-      addTask={}
-      updateTask={}
-      deleteTask={}
-      ref={modalRef}
+        open={state.modalOpen}
+        onClose={toggleModal(null)}
+        addTask={handleInsertTask}
+        updateTask={handleUpdateTask}
+        deleteTask={handleDeleteTask}
+        ref={modalRef}
       />
       {/* Task List */}
       <Grid xs={7}>
@@ -129,14 +137,17 @@ const TodoApp = () => {
                   </TaskInfoIcon>
                 </Grid>
                 <Grid xs={10}>
-                  <ListItemButton selected={state.tasks.includes(task.id)}>
+                  <ListItemButton
+                    selected={state.tasks.includes(task.id)}
+                    onClick={handleListItemClick(task.id)}
+                  >
                     <TaskName>{task.title}</TaskName>
                   </ListItemButton>
                 </Grid>
               </Grid>
             ))}
             <Divider />
-            <ListItemButton onClick={() => {}}>
+            <ListItemButton onClick={toggleModal(null)}>
               <TaskAddIcon>
                 <AddCircle />
               </TaskAddIcon>
