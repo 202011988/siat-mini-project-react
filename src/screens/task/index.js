@@ -43,6 +43,8 @@ const initialState = {
 
 const reducer = (state = initialState, action) => {
   // type - task : set, add, remove, update
+  // type - selectedIndex : set
+  // type - modal: open or close => toggle
   switch (action.type) {
     case "SET_TASKS":
       return { ...state, tasks: action.payload };
@@ -51,13 +53,13 @@ const reducer = (state = initialState, action) => {
     case "REMOVE_TASK":
       return {
         ...state,
-        tasks: state.tasks.filter((id) => id !== action.payload),
+        tasks: state.tasks.filter((task) => task.id !== action.payload),
       };
     case "UPDATE_TASK":
       return {
         ...state,
         tasks: state.tasks.map((task) =>
-          task.id !== action.payload ? action.payload : task,
+          task.id === action.payload.id ? action.payload : task,
         ),
       };
     case "SET_SELECTED_INDEX":
@@ -90,15 +92,15 @@ const TodoApp = () => {
     navigate(`/tasks/${index}`);
   };
 
-  const handleUpdateTask = (id, name, description) => {
-    // TODO
-    // apiProject.updateProject(id, name, description).then((res) => {
-    //   dispatch({ type: "UPDATE_PROJECT", payload: res });
-    // });
+  const handleUpdateTask = (id, title, description, dueDate, status) => {
+    apiTask
+      .updateTask(projectId, id, title, description, dueDate, status)
+      .then((res) => {
+        dispatch({ type: "UPDATE_TASK", payload: res });
+      });
   };
 
   const handleInsertTask = (title, description, dueDate, status) => {
-    // TODO
     apiTask
       .addTask(projectId, title, description, dueDate, status)
       .then((res) => {
@@ -107,10 +109,10 @@ const TodoApp = () => {
   };
 
   const handleDeleteTask = (id) => {
-    // TODO
-    // apiProject.removeProject(id).then(() => {
-    //   dispatch({ type: "REMOVE_PROJECT", payload: id });
-    // });
+    apiTask.removeTask(projectId, id).then(() => {
+      console.log(id);
+      dispatch({ type: "REMOVE_TASK", payload: id });
+    });
   };
 
   // refs
@@ -126,6 +128,7 @@ const TodoApp = () => {
         updateTask={handleUpdateTask}
         deleteTask={handleDeleteTask}
         ref={modalRef}
+        projectId={projectId}
       />
       {/* Task List */}
       <Grid xs={7}>

@@ -77,7 +77,9 @@ const CustomModal = ({
                     }}
                     autoWidth
                   >
-                    <MenuItem value={0}>PENDING</MenuItem>
+                    <MenuItem value={0} selected>
+                      PENDING
+                    </MenuItem>
                     <MenuItem value={1}>IN_PROGRESS</MenuItem>
                     <MenuItem value={2}>COMPLETED</MenuItem>
                   </Select>
