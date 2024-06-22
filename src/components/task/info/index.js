@@ -10,9 +10,24 @@ const TaskInfoModal = forwardRef(
 
     useImperativeHandle(ref, () => ({
       setTask: (newTask) => {
-        setTask(newTask);
+        setTask(() => {
+          return {
+            id: newTask.id,
+            title: newTask.title,
+            description: newTask.description,
+            dueDate: newTask.dueDate,
+            status:
+              newTask.status === "PENDING"
+                ? 0
+                : newTask.status === "IN_PROGRESS"
+                  ? 1
+                  : 2,
+          };
+        });
       },
     }));
+
+    console.log(task);
 
     const handleInsert = () => {
       // TODO : title, description, dueDate, status
@@ -22,6 +37,7 @@ const TaskInfoModal = forwardRef(
 
     const handleUpdate = () => {
       // TODO
+      updateTask();
       onClose();
     };
 

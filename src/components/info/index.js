@@ -11,6 +11,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import FormControl from "@mui/material/FormControl";
+import dayjs from "dayjs";
 
 const CustomModal = ({
   open,
@@ -42,6 +43,7 @@ const CustomModal = ({
                   <DemoContainer components={["DatePicker"]}>
                     <DatePicker
                       label="Basic date picker"
+                      defaultValue={dayjs(values[field.name])}
                       onChange={(e) => {
                         // "2024-06-05T15:00:00.000Z" {e.$d} or {e.$y, e.$m, e.$D}
                         // console.log(
