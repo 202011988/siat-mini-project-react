@@ -24,15 +24,15 @@ export const TaskInfoIcon = styled(ListItemIcon)`
   height: 100%;
 `;
 
-const stateColor = {
-  PENDING: "",
-  IN_PROGRESS: "",
+const statusColor = {
+  PENDING: "lightgreen",
+  IN_PROGRESS: "lightblue",
   COMPLETED: "lightgray",
 };
 
 export const TaskItem = styled(Grid)`
   margin: 10px;
-  background-color: lightblue;
+  background-color: ${({ status }) => statusColor[status]};
   border-radius: 15px;
 `;
 

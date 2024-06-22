@@ -80,7 +80,7 @@ const TodoApp = () => {
 
   const handleListItemClick = (index) => () => {
     dispatch({ type: "SET_SELECTED_INDEX", payload: index });
-    navigate(`/tasks/${index}`);
+    navigate(`tasks/${index}`);
   };
 
   const handleUpdateTask = (id, title, description, dueDate, status) => {
@@ -126,7 +126,7 @@ const TodoApp = () => {
         <TaskListBox>
           <TaskList>
             {state.tasks.map((task) => (
-              <TaskItem container key={task.id}>
+              <TaskItem status={task.status} container key={task.id}>
                 <Grid>
                   {/*xs={2}*/}
                   <TaskInfoIcon>
