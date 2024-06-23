@@ -4,6 +4,7 @@ import Signin from "./screens/signin";
 import Signup from "./screens/signup";
 import Root from "./screens/root";
 import Todo from "./screens/task";
+import Step from "./screens/step";
 
 const router = createBrowserRouter([
   // AUTH
@@ -39,6 +40,12 @@ const router = createBrowserRouter([
       {
         path: "projects/:projectId",
         element: <Todo />,
+        children: [
+          {
+            path: "tasks/:taskId",
+            element: <Step />,
+          },
+        ],
       },
     ],
   },
