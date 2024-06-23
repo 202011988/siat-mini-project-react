@@ -15,7 +15,7 @@ const loginUser = async (email, password) => {
 };
 
 const logoutUser = async () => {
-  const response = await axios.get(`/api/logout`);
+  const response = await axios.post(`/api/logout`);
   return response.data;
 };
 
