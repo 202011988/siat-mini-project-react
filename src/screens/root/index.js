@@ -2,6 +2,7 @@ import Grid from "@mui/material/Unstable_Grid2";
 import { useEffect, useReducer, useRef } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { apiProject } from "../../axios/project";
+import { apiUser } from "../../axios/user";
 import {
   ProjectAddIcon,
   ProjectInfoIcon,
@@ -13,6 +14,7 @@ import { Divider, ListItem, ListItemButton } from "@mui/material";
 import { AddCircle, InfoOutlined, Login, Logout } from "@mui/icons-material";
 import ProjectInfoModal from "../../components/project/info";
 import Typography from "@mui/material/Typography";
+import { useCookies } from "react-cookie";
 
 const initialState = {
   projects: [
@@ -83,7 +85,12 @@ const RootScreen = () => {
   const handleLogin = () => {
     navigate("/signin");
   };
-  const handleLogout = () => {};
+
+  const handleLogout = () => {
+    apiUser.logout().then(() => {
+      window.location.replace("/");
+    });
+  };
 
   const toggleModal = (project) => () => {
     dispatch({ type: "TOGGLE_MODAL" });
@@ -157,22 +164,22 @@ const RootScreen = () => {
               </ProjectAddIcon>
             </ListItemButton>
             <Divider />
-            {!state.isLoggedIn ? (
-              <ListItemButton onClick={handleLogin}>
-                <Login />
-                Login
-              </ListItemButton>
-            ) : (
-              <>
-                <ListItem>
-                  <Typography variant="body2">{state.userEmail}</Typography>
-                </ListItem>
-                <ListItemButton onClick={handleLogout}>
-                  <Logout />
-                  Logout
-                </ListItemButton>
-              </>
-            )}
+            {/*{!state.isLoggedIn ? (*/}
+            {/*  <ListItemButton onClick={handleLogin}>*/}
+            {/*    <Login />*/}
+            {/*    Login*/}
+            {/*  </ListItemButton>*/}
+            {/*) : (*/}
+            {/*  <>*/}
+            <ListItem>
+              <Typography variant="body2">{state.userEmail}</Typography>
+            </ListItem>
+            <ListItemButton onClick={handleLogout}>
+              <Logout />
+              Logout
+            </ListItemButton>
+            {/*  </>*/}
+            {/*)}*/}
           </ProjectList>
         </ProjectListBox>
       </Grid>

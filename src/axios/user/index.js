@@ -14,7 +14,13 @@ const loginUser = async (email, password) => {
   return response.data;
 };
 
+const logoutUser = async () => {
+  const response = await axios.get(`/api/logout`);
+  return response.data;
+};
+
 export const apiUser = {
   addUser: insertUser,
   login: loginUser,
+  logout: logoutUser,
 };
