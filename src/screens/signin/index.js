@@ -7,7 +7,8 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import styled from "@emotion/styled";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { apiUser } from "../../axios/user";
 
 const RoundedCard = styled(Box)`
   display: flex;
@@ -34,13 +35,20 @@ const SignInScreen = () => {
   const [emailError, setEmailError] = React.useState(false);
   const [passwordError, setPasswordError] = React.useState(false);
 
+  const navigate = useNavigate();
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+    // console.log({
+    //   email: data.get("email"),
+    //   password: data.get("password"),
+    // });
+    if (!emailError && !passwordError) {
+      apiUser.login(data.get("email"), data.get("password")).then((res) => {
+        navigate("/");
+      });
+    }
   };
 
   const validateInputs = () => {
