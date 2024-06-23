@@ -67,9 +67,16 @@ const RootScreen = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    apiProject.getProjects().then((res) => {
-      dispatch({ type: "SET_PROJECTS", payload: res });
-    });
+    apiProject
+      .getProjects()
+      .then((res) => {
+        dispatch({ type: "SET_PROJECTS", payload: res });
+      })
+      .catch((err) => {
+        if (err.response.status === 401) {
+          navigate("/signin");
+        }
+      });
   }, []);
 
   // methods
