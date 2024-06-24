@@ -29,15 +29,24 @@ const reducer = (state, action) => {
   switch (action.type) {
     case "SET_TASKS":
       console.log("작업 설정 중:", action.payload);
-      return { ...state, tasks: action.payload.tasks, totalPage: action.payload.totalPage };
+      return {
+        ...state,
+        tasks: action.payload.tasks,
+        totalPage: action.payload.totalPage,
+      };
     case "ADD_TASK":
       return { ...state, tasks: [...state.tasks, action.payload] };
     case "REMOVE_TASK":
-      return { ...state, tasks: state.tasks.filter((task) => task.id !== action.payload) };
+      return {
+        ...state,
+        tasks: state.tasks.filter((task) => task.id !== action.payload),
+      };
     case "UPDATE_TASK":
       return {
         ...state,
-        tasks: state.tasks.map((task) => (task.id === action.payload.id ? action.payload : task)),
+        tasks: state.tasks.map((task) =>
+          task.id === action.payload.id ? action.payload : task,
+        ),
       };
     case "SET_SELECTED_INDEX":
       return { ...state, selectedIndex: action.payload };
@@ -67,7 +76,10 @@ const TodoApp = () => {
           payload: { tasks: res.resultList, totalPage: res.totalPage },
         });
       } else {
-        console.error("resultList가 배열이 아니거나 정의되지 않음:", res.resultList);
+        console.error(
+          "resultList가 배열이 아니거나 정의되지 않음:",
+          res.resultList,
+        );
       }
     } catch (error) {
       console.error("작업을 가져오는 중 오류 발생:", error);
@@ -89,27 +101,36 @@ const TodoApp = () => {
   };
 
   const handleUpdateTask = (id, title, description, dueDate, status) => {
-    apiTask.updateTask(projectId, id, title, description, dueDate, status).then(() => {
-      fetchTasks(projectId, state.currentPage); // 작업 업데이트 후 다시 데이터를 가져옴
-    }).catch(error => {
-      console.error("작업을 업데이트하는 중 오류 발생:", error);
-    });
+    apiTask
+      .updateTask(projectId, id, title, description, dueDate, status)
+      .then(() => {
+        fetchTasks(projectId, state.currentPage); // 작업 업데이트 후 다시 데이터를 가져옴
+      })
+      .catch((error) => {
+        console.error("작업을 업데이트하는 중 오류 발생:", error);
+      });
   };
 
   const handleInsertTask = (title, description, dueDate, status) => {
-    apiTask.addTask(projectId, title, description, dueDate, status).then(() => {
-      fetchTasks(projectId, state.currentPage); // 작업 추가 후 다시 데이터를 가져옴
-    }).catch(error => {
-      console.error("작업을 추가하는 중 오류 발생:", error);
-    });
+    apiTask
+      .addTask(projectId, title, description, dueDate, status)
+      .then(() => {
+        fetchTasks(projectId, state.currentPage); // 작업 추가 후 다시 데이터를 가져옴
+      })
+      .catch((error) => {
+        console.error("작업을 추가하는 중 오류 발생:", error);
+      });
   };
 
   const handleDeleteTask = (id) => {
-    apiTask.removeTask(projectId, id).then(() => {
-      fetchTasks(projectId, state.currentPage); // 작업 삭제 후 다시 데이터를 가져옴
-    }).catch(error => {
-      console.error("작업을 삭제하는 중 오류 발생:", error);
-    });
+    apiTask
+      .removeTask(projectId, id)
+      .then(() => {
+        fetchTasks(projectId, state.currentPage); // 작업 삭제 후 다시 데이터를 가져옴
+      })
+      .catch((error) => {
+        console.error("작업을 삭제하는 중 오류 발생:", error);
+      });
   };
 
   const handlePageChange = (event, value) => {
@@ -159,14 +180,16 @@ const TodoApp = () => {
                 <AddCircle />
               </TaskAddIcon>
             </ListItemButton>
+            <Divider />
+            <Stack spacing={2} marginY={3}>
+              <Pagination
+                count={state.totalPage}
+                page={state.currentPage + 1}
+                onChange={handlePageChange}
+                sx={{ display: "flex", justifyContent: "center" }}
+              />
+            </Stack>
           </TaskList>
-          <Stack spacing={2}>
-            <Pagination
-              count={state.totalPage}
-              page={state.currentPage + 1}
-              onChange={handlePageChange}
-            />
-          </Stack>
         </TaskListBox>
       </Grid>
       <Grid xs={5}>
