@@ -24,6 +24,15 @@ export const TaskInfoIcon = styled(ListItemIcon)`
   height: 100%;
 `;
 
+export const Dday = styled(Typography, {
+  withComponent: "span",
+})`
+  color: ${(props) =>
+    props.dday > 0 ? "gray" : props.dday > -10 ? "red" : "black"};
+  font-weight: 600;
+  font-size: 1.2rem;
+`;
+
 const statusColor = {
   PENDING: "lightgreen",
   IN_PROGRESS: "lightblue",

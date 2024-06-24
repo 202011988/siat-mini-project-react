@@ -7,6 +7,7 @@ import {
   TaskListBox,
   TaskName,
   TaskItem,
+  Dday,
 } from "../../styled/task";
 import { AddCircle, InfoOutlined } from "@mui/icons-material";
 import { Outlet } from "react-router-dom";
@@ -14,6 +15,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useReducer, useRef } from "react";
 import { apiTask } from "../../axios/task";
 import TaskInfoModal from "../../components/task/info";
+import dayjs from "dayjs";
 
 const initialState = {
   tasks: [
@@ -133,13 +135,26 @@ const TodoApp = () => {
                     <InfoOutlined onClick={toggleModal(task)} />
                   </TaskInfoIcon>
                 </Grid>
-                <Grid>
-                  {/*xs={10}*/}
+                <Grid xs={8}>
                   <ListItemButton
                     selected={state.tasks.includes(task.id)}
                     onClick={handleListItemClick(task.id)}
+                    //sx={{ display: "flex", justifyContent: "space-around" }}
                   >
                     <TaskName>{task.title}</TaskName>
+                  </ListItemButton>
+                </Grid>
+                <Grid>
+                  {/*xs={10}*/}
+                  <ListItemButton>
+                    <Dday dday={dayjs().diff(task.dueDate, "days")}>
+                      D
+                      {dayjs().diff(task.dueDate, "days") < 0
+                        ? dayjs().diff(task.dueDate, "days")
+                        : dayjs().diff(task.dueDate, "days") === 0
+                          ? "-Day"
+                          : "+" + dayjs().diff(task.dueDate, "days")}
+                    </Dday>
                   </ListItemButton>
                 </Grid>
               </TaskItem>
