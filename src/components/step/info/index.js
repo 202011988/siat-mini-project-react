@@ -13,9 +13,25 @@ const StepInfoModal = forwardRef(({ open, onClose, addStep }, ref, taskId) => {
     },
   }));
 
+  const validateInputs = (name, description) => {
+    let isValid = true;
+
+    if (!name || !name.length > 0) {
+      alert("유효하지 않은 이름입니다.");
+      return false;
+    }
+
+    if (!description || !description.length > 0) {
+      alert("유효하지 않은 설명입니다.");
+      return false;
+    }
+    return isValid;
+  };
   const handleInsert = () => {
-    addStep(step.title, step.description);
-    onClose();
+    if (validateInputs(step.title, step.description)) {
+      addStep(step.title, step.description);
+      onClose();
+    }
   };
 
   // const handleDelete = () => {

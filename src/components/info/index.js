@@ -88,6 +88,7 @@ const CustomModal = ({
                   variant="outlined"
                   value={values[field.name] || ""}
                   onChange={(e) => onChange(field.name, e.target.value)}
+                  required
                   fullWidth
                 />
               )}

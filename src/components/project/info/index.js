@@ -14,14 +14,36 @@ const ProjectInfoModal = forwardRef(
       },
     }));
 
+    const validateInputs = (name, description) => {
+      // const name = document.getElementById("name");
+      // const description = document.getElementById("description");
+
+      let isValid = true;
+
+      if (!name || !name.length > 0) {
+        alert("유효하지 않은 이름입니다.");
+        return false;
+      }
+
+      if (!description || !description.length > 0) {
+        alert("유효하지 않은 설명입니다.");
+        return false;
+      }
+      return isValid;
+    };
+
     const handleInsert = () => {
-      addProject(project.name, project.description);
-      onClose();
+      if (validateInputs(project.name, project.description)) {
+        addProject(project.name, project.description);
+        onClose();
+      }
     };
 
     const handleUpdate = () => {
-      updateProject(project.id, project.name, project.description);
-      onClose();
+      if (validateInputs(project.name, project.description)) {
+        updateProject(project.id, project.name, project.description);
+        onClose();
+      }
     };
 
     const handleDelete = () => {

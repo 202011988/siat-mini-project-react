@@ -73,6 +73,9 @@ const StepApp = () => {
     apiStep.addStep(taskId, title, description).then((res) => {
       dispatch({ type: "ADD_STEP", payload: res });
     });
+    // .catch(() => {
+    //   alert("비정상적인 입력입니다.");
+    // });
   };
 
   const handleDeleteStep = (id) => (event) => {

@@ -27,23 +27,54 @@ const TaskInfoModal = forwardRef(
       },
     }));
 
-    console.log(task);
+    const validateInputs = (title, description, dueDate, status) => {
+      let isValid = true;
+
+      if (!title || !title.length > 0) {
+        alert("유효하지 않은 제목입니다.");
+        return false;
+      }
+
+      if (!description || !description.length > 0) {
+        alert("유효하지 않은 설명입니다.");
+        return false;
+      }
+
+      if (!dueDate || !dueDate.length > 0) {
+        alert("유효하지 않은 기한입니다.");
+        return false;
+      }
+
+      if (!status || !status.length > 0) {
+        alert("유효하지 않은 상태입니다.");
+        return false;
+      }
+      return isValid;
+    };
 
     const handleInsert = () => {
       // TODO : title, description, dueDate, status
-      addTask(task.title, task.description, task.dueDate, task.status);
-      onClose();
+      if (
+        validateInputs(task.title, task.description, task.dueDate, task.status)
+      ) {
+        addTask(task.title, task.description, task.dueDate, task.status);
+        onClose();
+      }
     };
 
     const handleUpdate = () => {
-      updateTask(
-        task.id,
-        task.title,
-        task.description,
-        task.dueDate,
-        task.status,
-      );
-      onClose();
+      if (
+        validateInputs(task.title, task.description, task.dueDate, task.status)
+      ) {
+        updateTask(
+          task.id,
+          task.title,
+          task.description,
+          task.dueDate,
+          task.status,
+        );
+        onClose();
+      }
     };
 
     const handleDelete = () => {
