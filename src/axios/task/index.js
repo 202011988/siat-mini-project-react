@@ -1,8 +1,8 @@
 import axios from "axios";
 
-const fetchTasks = async (id) => {
-  const response = await axios.get(`/api/projects/${id}`);
-  return response.data.resultList;
+const fetchTasks = async (id, page) => {
+  const response = await axios.get(`/api/projects/${id}?page=${page}`);
+  return response.data;
 };
 
 const insertTask = async (projectId, title, description, dueDate, status) => {

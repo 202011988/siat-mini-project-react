@@ -15,32 +15,27 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useReducer, useRef } from "react";
 import { apiTask } from "../../axios/task";
 import TaskInfoModal from "../../components/task/info";
+import Pagination from "@mui/material/Pagination";
+import Stack from "@mui/material/Stack";
 import dayjs from "dayjs";
 
 const initialState = {
-  tasks: [
-    {
-      id: 1,
-      project_id: 1,
-      updated_at: new Date(),
-      created_at: new Date(),
-      due_date: new Date() + 2,
-      description: "description 1",
-      title: "title 1",
-      status: "PENDING",
-    },
-  ],
-  selectedIndex: 1,
+  tasks: [],
+  selectedIndex: null,
   modalOpen: false,
+  totalPage: 0,
+  currentPage: 0,
 };
 
-const reducer = (state = initialState, action) => {
-  // type - task : set, add, remove, update
-  // type - selectedIndex : set
-  // type - modal: open or close => toggle
+const reducer = (state, action) => {
   switch (action.type) {
     case "SET_TASKS":
-      return { ...state, tasks: action.payload };
+      console.log("작업 설정 중:", action.payload);
+      return {
+        ...state,
+        tasks: action.payload.tasks,
+        totalPage: action.payload.totalPage,
+      };
     case "ADD_TASK":
       return { ...state, tasks: [...state.tasks, action.payload] };
     case "REMOVE_TASK":
@@ -59,6 +54,10 @@ const reducer = (state = initialState, action) => {
       return { ...state, selectedIndex: action.payload };
     case "TOGGLE_MODAL":
       return { ...state, modalOpen: !state.modalOpen };
+    case "SET_CURRENT_PAGE":
+      return { ...state, currentPage: action.payload };
+    default:
+      return state;
   }
 };
 
@@ -66,13 +65,32 @@ const TodoApp = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const navigate = useNavigate();
   const { projectId } = useParams();
+  const modalRef = useRef(null);
+
+  const fetchTasks = async (projectId, currentPage) => {
+    try {
+      const res = await apiTask.getTasks(projectId, currentPage);
+      console.log("API 응답:", res);
+
+      if (res.resultList && Array.isArray(res.resultList)) {
+        dispatch({
+          type: "SET_TASKS",
+          payload: { tasks: res.resultList, totalPage: res.totalPage },
+        });
+      } else {
+        console.error(
+          "resultList가 배열이 아니거나 정의되지 않음:",
+          res.resultList,
+        );
+      }
+    } catch (error) {
+      console.error("작업을 가져오는 중 오류 발생:", error);
+    }
+  };
 
   useEffect(() => {
-    apiTask.getTasks(projectId).then((res) => {
-      console.log(res);
-      dispatch({ type: "SET_TASKS", payload: res });
-    });
-  }, [projectId]);
+    fetchTasks(projectId, state.currentPage);
+  }, [projectId, state.currentPage]);
 
   // methods
   const toggleModal = (task) => () => {
@@ -88,29 +106,41 @@ const TodoApp = () => {
   const handleUpdateTask = (id, title, description, dueDate, status) => {
     apiTask
       .updateTask(projectId, id, title, description, dueDate, status)
-      .then((res) => {
-        dispatch({ type: "UPDATE_TASK", payload: res });
+      .then(() => {
+        fetchTasks(projectId, state.currentPage); // 작업 업데이트 후 다시 데이터를 가져옴
+      })
+      .catch((error) => {
+        console.error("작업을 업데이트하는 중 오류 발생:", error);
       });
   };
 
   const handleInsertTask = (title, description, dueDate, status) => {
     apiTask
       .addTask(projectId, title, description, dueDate, status)
-      .then((res) => {
-        dispatch({ type: "ADD_TASK", payload: res });
+      .then(() => {
+        fetchTasks(projectId, state.currentPage); // 작업 추가 후 다시 데이터를 가져옴
+      })
+      .catch((error) => {
+        console.error("작업을 추가하는 중 오류 발생:", error);
       });
   };
 
   const handleDeleteTask = (id) => {
-    apiTask.removeTask(projectId, id).then(() => {
-      console.log(id);
-      dispatch({ type: "REMOVE_TASK", payload: id });
-    });
+    apiTask
+      .removeTask(projectId, id)
+      .then(() => {
+        fetchTasks(projectId, state.currentPage); // 작업 삭제 후 다시 데이터를 가져옴
+      })
+      .catch((error) => {
+        console.error("작업을 삭제하는 중 오류 발생:", error);
+      });
   };
 
-  // refs
-  const modalRef = useRef(null);
-  console.log(state.tasks);
+  const handlePageChange = (event, value) => {
+    dispatch({ type: "SET_CURRENT_PAGE", payload: value - 1 });
+  };
+
+  console.log("현재 state.tasks:", state.tasks);
 
   return (
     <Grid container>
@@ -127,7 +157,8 @@ const TodoApp = () => {
       <Grid xs={7}>
         <TaskListBox>
           <TaskList>
-            {state.tasks.map((task) => (
+            {state.tasks.length > 0 ? (
+                state.tasks.map((task) => (
               <TaskItem status={task.status} container key={task.id}>
                 <Grid>
                   {/*xs={2}*/}
@@ -137,9 +168,9 @@ const TodoApp = () => {
                 </Grid>
                 <Grid xs={8}>
                   <ListItemButton
-                    selected={state.tasks.includes(task.id)}
+                    selected={state.selectedIndex === task.id}
                     onClick={handleListItemClick(task.id)}
-                    //sx={{ display: "flex", justifyContent: "space-around" }}
+
                   >
                     <TaskName>{task.title}</TaskName>
                   </ListItemButton>
@@ -158,30 +189,33 @@ const TodoApp = () => {
                   </ListItemButton>
                 </Grid>
               </TaskItem>
-            ))}
+                ))
+            ) : (
+                <p>Task가 없습니다.</p>
+            )}
             <Divider />
             <ListItemButton onClick={toggleModal(null)}>
               <TaskAddIcon>
                 <AddCircle />
               </TaskAddIcon>
             </ListItemButton>
+            <Divider />
+            <Stack spacing={2} marginY={3}>
+              <Pagination
+                count={state.totalPage}
+                page={state.currentPage + 1}
+                onChange={handlePageChange}
+                sx={{ display: "flex", justifyContent: "center" }}
+              />
+            </Stack>
           </TaskList>
         </TaskListBox>
       </Grid>
       <Grid xs={5}>
-        {/* Steps */}
         <Outlet />
       </Grid>
     </Grid>
   );
-
-  // return (
-  //   <div>
-  //     {state.tasks.map((value) => (
-  //       <p>{value.title}</p>
-  //     ))}
-  //   </div>
-  // );
 };
 
 export default TodoApp;
