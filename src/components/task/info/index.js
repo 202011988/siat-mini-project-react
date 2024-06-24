@@ -27,7 +27,7 @@ const TaskInfoModal = forwardRef(
       },
     }));
 
-    const validateInputs = (title, description, dueDate, status) => {
+    const validateInputs = (title, description, dueDate) => {
       let isValid = true;
 
       if (!title || !title.length > 0) {
@@ -44,19 +44,12 @@ const TaskInfoModal = forwardRef(
         alert("유효하지 않은 기한입니다.");
         return false;
       }
-
-      if (!status || !status.length > 0) {
-        alert("유효하지 않은 상태입니다.");
-        return false;
-      }
       return isValid;
     };
 
     const handleInsert = () => {
       // TODO : title, description, dueDate, status
-      if (
-        validateInputs(task.title, task.description, task.dueDate, task.status)
-      ) {
+      if (validateInputs(task.title, task.description, task.dueDate)) {
         addTask(task.title, task.description, task.dueDate, task.status);
         onClose();
       }

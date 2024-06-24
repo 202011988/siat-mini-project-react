@@ -158,40 +158,47 @@ const TodoApp = () => {
         <TaskListBox>
           <TaskList>
             {state.tasks.length > 0 ? (
-                state.tasks.map((task) => (
-              <TaskItem status={task.status} container key={task.id}>
-                <Grid>
-                  {/*xs={2}*/}
-                  <TaskInfoIcon>
-                    <InfoOutlined onClick={toggleModal(task)} />
-                  </TaskInfoIcon>
-                </Grid>
-                <Grid xs={8}>
-                  <ListItemButton
-                    selected={state.selectedIndex === task.id}
-                    onClick={handleListItemClick(task.id)}
-
-                  >
-                    <TaskName>{task.title}</TaskName>
-                  </ListItemButton>
-                </Grid>
-                <Grid>
-                  {/*xs={10}*/}
-                  <ListItemButton>
-                    <Dday dday={dayjs().diff(task.dueDate, "days")}>
-                      D
-                      {dayjs().diff(task.dueDate, "days") < 0
-                        ? dayjs().diff(task.dueDate, "days")
-                        : dayjs().diff(task.dueDate, "days") === 0
+              state.tasks.map((task) => (
+                <TaskItem status={task.status} container key={task.id}>
+                  <Grid>
+                    {/*xs={2}*/}
+                    <TaskInfoIcon>
+                      <InfoOutlined onClick={toggleModal(task)} />
+                    </TaskInfoIcon>
+                  </Grid>
+                  <Grid xs={8}>
+                    <ListItemButton
+                      selected={state.selectedIndex === task.id}
+                      onClick={handleListItemClick(task.id)}
+                    >
+                      <TaskName>{task.title}</TaskName>
+                    </ListItemButton>
+                  </Grid>
+                  <Grid>
+                    {/*xs={10}*/}
+                    <ListItemButton>
+                      <Dday
+                        dday={dayjs().diff(task.dueDate, "d")}
+                        today={dayjs().isSame(task.dueDate, "d")}
+                      >
+                        D
+                        {dayjs().isSame(task.dueDate, "d")
                           ? "-Day"
-                          : "+" + dayjs().diff(task.dueDate, "days")}
-                    </Dday>
-                  </ListItemButton>
-                </Grid>
-              </TaskItem>
-                ))
+                          : dayjs().diff(task.dueDate, "d") <= 0
+                            ? dayjs().diff(task.dueDate, "d") - 1
+                            : "+" + dayjs().diff(task.dueDate, "d")}
+                        {/*{dayjs().diff(task.dueDate, "d") < 0*/}
+                        {/*  ? dayjs().diff(task.dueDate, "d")*/}
+                        {/*  : dayjs().isSame(task.dueDate, "d")*/}
+                        {/*    ? "-Day"*/}
+                        {/*    : "+" + (dayjs().diff(task.dueDate, "d") - 1)}*/}
+                      </Dday>
+                    </ListItemButton>
+                  </Grid>
+                </TaskItem>
+              ))
             ) : (
-                <p>Task가 없습니다.</p>
+              <p>Task가 없습니다.</p>
             )}
             <Divider />
             <ListItemButton onClick={toggleModal(null)}>

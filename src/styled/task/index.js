@@ -28,7 +28,13 @@ export const Dday = styled(Typography, {
   withComponent: "span",
 })`
   color: ${(props) =>
-    props.dday > 0 ? "gray" : props.dday > -10 ? "red" : "black"};
+    props.today
+      ? "red"
+      : props.dday > 0
+        ? "gray"
+        : props.dday > -10
+          ? "red"
+          : "black"};
   font-weight: 600;
   font-size: 1.2rem;
 `;
